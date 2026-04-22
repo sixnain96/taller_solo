@@ -1,0 +1,10 @@
+target/
+.idea/
+*.iml
+*.log
+.env
+.h2.server.properties
+*.class
+out/
+.DS_Store
+Thumbs.db

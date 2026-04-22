@@ -1,0 +1,175 @@
+{
+  "info": {
+    "name": "bookstore-api",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": "Colección para probar la API bookstore-api"
+  },
+  "variable": [
+    {"key": "baseUrl", "value": "http://localhost:8080/api/v1"},
+    {"key": "adminToken", "value": ""},
+    {"key": "userToken", "value": ""},
+    {"key": "authorId", "value": "1"},
+    {"key": "categoryId1", "value": "1"},
+    {"key": "categoryId2", "value": "2"},
+    {"key": "bookId", "value": "1"},
+    {"key": "orderId", "value": "1"}
+  ],
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Register User",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {"mode": "raw", "raw": "{\n  \"fullName\": \"Nuevo Usuario\",\n  \"email\": \"nuevo@bookstore.com\",\n  \"password\": \"Password123*\"\n}"},
+            "url": "{{baseUrl}}/auth/register"
+          }
+        },
+        {
+          "name": "Login Admin",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {"mode": "raw", "raw": "{\n  \"email\": \"admin@bookstore.com\",\n  \"password\": \"Admin123*\"\n}"},
+            "url": "{{baseUrl}}/auth/login"
+          }
+        },
+        {
+          "name": "Login User",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {"mode": "raw", "raw": "{\n  \"email\": \"user@bookstore.com\",\n  \"password\": \"User1234*\"\n}"},
+            "url": "{{baseUrl}}/auth/login"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Authors",
+      "item": [
+        {
+          "name": "Get Authors",
+          "request": {"method": "GET", "url": "{{baseUrl}}/authors"}
+        },
+        {
+          "name": "Create Author (ADMIN)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {"key": "Content-Type", "value": "application/json"},
+              {"key": "Authorization", "value": "Bearer {{adminToken}}"}
+            ],
+            "body": {"mode": "raw", "raw": "{\n  \"name\": \"Julio Verne\",\n  \"biography\": \"Autor francés de ciencia ficción\",\n  \"email\": \"julio@demo.com\",\n  \"phone\": \"3000000003\"\n}"},
+            "url": "{{baseUrl}}/authors"
+          }
+        },
+        {
+          "name": "Get Books By Author",
+          "request": {"method": "GET", "url": "{{baseUrl}}/authors/{{authorId}}/books"}
+        }
+      ]
+    },
+    {
+      "name": "Categories",
+      "item": [
+        {"name": "Get Categories", "request": {"method": "GET", "url": "{{baseUrl}}/categories"}},
+        {
+          "name": "Create Category (ADMIN)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {"key": "Content-Type", "value": "application/json"},
+              {"key": "Authorization", "value": "Bearer {{adminToken}}"}
+            ],
+            "body": {"mode": "raw", "raw": "{\n  \"name\": \"Tecnología\",\n  \"description\": \"Libros sobre tecnología\"\n}"},
+            "url": "{{baseUrl}}/categories"
+          }
+        },
+        {"name": "Get Books By Category", "request": {"method": "GET", "url": "{{baseUrl}}/categories/{{categoryId1}}/books"}}
+      ]
+    },
+    {
+      "name": "Books",
+      "item": [
+        {"name": "Get Books", "request": {"method": "GET", "url": "{{baseUrl}}/books?page=0&size=10"}},
+        {"name": "Get Books By Filters", "request": {"method": "GET", "url": "{{baseUrl}}/books?authorId={{authorId}}&categoryId={{categoryId1}}&page=0&size=10"}},
+        {
+          "name": "Create Book (ADMIN)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {"key": "Content-Type", "value": "application/json"},
+              {"key": "Authorization", "value": "Bearer {{adminToken}}"}
+            ],
+            "body": {"mode": "raw", "raw": "{\n  \"title\": \"Clean Code\",\n  \"isbn\": \"9780132350884\",\n  \"price\": 79.90,\n  \"stock\": 12,\n  \"description\": \"Libro de buenas prácticas de programación\",\n  \"authorId\": {{authorId}},\n  \"categoryIds\": [{{categoryId1}}, {{categoryId2}}]\n}"},
+            "url": "{{baseUrl}}/books"
+          }
+        },
+        {
+          "name": "Update Book (ADMIN)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {"key": "Content-Type", "value": "application/json"},
+              {"key": "Authorization", "value": "Bearer {{adminToken}}"}
+            ],
+            "body": {"mode": "raw", "raw": "{\n  \"title\": \"Clean Code - Updated\",\n  \"isbn\": \"9780132350884\",\n  \"price\": 84.90,\n  \"stock\": 10,\n  \"description\": \"Edición actualizada\",\n  \"authorId\": {{authorId}},\n  \"categoryIds\": [{{categoryId1}}]\n}"},
+            "url": "{{baseUrl}}/books/{{bookId}}"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Orders",
+      "item": [
+        {
+          "name": "Create Order (USER)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {"key": "Content-Type", "value": "application/json"},
+              {"key": "Authorization", "value": "Bearer {{userToken}}"}
+            ],
+            "body": {"mode": "raw", "raw": "{\n  \"items\": [\n    {\"bookId\": {{bookId}}, \"quantity\": 2}\n  ]\n}"},
+            "url": "{{baseUrl}}/orders"
+          }
+        },
+        {
+          "name": "Get My Orders (USER)",
+          "request": {
+            "method": "GET",
+            "header": [{"key": "Authorization", "value": "Bearer {{userToken}}"}],
+            "url": "{{baseUrl}}/orders/my"
+          }
+        },
+        {
+          "name": "Get All Orders (ADMIN)",
+          "request": {
+            "method": "GET",
+            "header": [{"key": "Authorization", "value": "Bearer {{adminToken}}"}],
+            "url": "{{baseUrl}}/orders"
+          }
+        },
+        {
+          "name": "Confirm Order (ADMIN)",
+          "request": {
+            "method": "PATCH",
+            "header": [{"key": "Authorization", "value": "Bearer {{adminToken}}"}],
+            "url": "{{baseUrl}}/orders/{{orderId}}/confirm"
+          }
+        },
+        {
+          "name": "Cancel Order (USER)",
+          "request": {
+            "method": "PATCH",
+            "header": [{"key": "Authorization", "value": "Bearer {{userToken}}"}],
+            "url": "{{baseUrl}}/orders/{{orderId}}/cancel"
+          }
+        }
+      ]
+    }
+  ]
+}
